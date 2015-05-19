@@ -38,7 +38,12 @@
 
                 var vm = this;
 
-                //vm.logout = logout;
+                vm.logout = logout;
+                function logout(){
+                    //console.log('entra');
+                    acAngularLoginClientService.logout();
+                }
+
                 //
                 //function logout() {
                 //
@@ -56,6 +61,9 @@
                 //console.log('entr');
                 //console.log($routeParams.auth);
                 //console.log($routeParams.id);
+
+
+
                 if ($routeParams !== undefined) {
                     //console.log($routeParams);
                     if ($routeParams.id == -1) {
@@ -114,17 +122,17 @@
                     globals.rol !== undefined &&
                     globals.rol !== '') {
                     checkLastLogin(globals.userid, globals.verification, function (data) {
-                        console.log(data);
+                        //console.log(data);
                         if (!data) {
                             // Redirecciona a la aplicación verdadera
                             //console.log('true');
-                            //$window.location.href = destinationWebsite + 'clear';
+                            $window.location.href = destinationWebsite + 'clear';
                         }
                     });
 
 
                 } else {
-                    //$window.location.href = destinationWebsite + 'clear';
+                    $window.location.href = destinationWebsite + 'clear';
                 }
             }
 
@@ -145,7 +153,7 @@
                     if (data == 'false' || data.rol_id == 0 || data.rol_id == '' || data.rol_id == null) {
                         $cookieStore.remove(cookieName);
 
-                        //$window.location.href = destinationWebsite + 'clear';
+                        $window.location.href = destinationWebsite + 'clear';
                     } else {
                         setLogged(data.user_name, userid, data.rol_id, token);
 
@@ -170,7 +178,7 @@
 
 
             //console.log($cookieStore.get(cookieName));
-            //$window.location.href=destinationWebsite;
+            $window.location.href=destinationWebsite;
         }
 
         function checkLogged() {
