@@ -97,7 +97,7 @@
     function AcAngularLoginClientService($http, $cookieStore, $window, $location) {
         //Variables
         var service = {};
-        var url = currentScriptPath.replace('.js', '.php');
+        var url = currentScriptPath.replace('verify-login.js', 'user.php');
 
         //Function declarations
         service.checkLogged = checkLogged;
