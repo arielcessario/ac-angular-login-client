@@ -9,7 +9,7 @@
 session_start();
 if(file_exists('./MyDBi.php'))
 {
-    require_once './MyDBi.php';
+    require_once 'MyDBi.php';
 }else{
     require_once '../../../MyDBi.php';
 }

@@ -116,13 +116,13 @@
                         if (!data) {
                             // Redirecciona a la aplicación verdadera
                             //console.log('true');
-                            $window.location.href = destinationWebsite + 'clear';
+                            //$window.location.href = destinationWebsite + 'clear';
                         }
                     });
 
 
                 } else {
-                    $window.location.href = destinationWebsite + 'clear';
+                    //$window.location.href = destinationWebsite + 'clear';
                 }
             }
 
@@ -178,7 +178,7 @@
         function logout() {
             var globals = $cookieStore.get(cookieName);
 
-            return $http.post('./login-api/user.php',
+            return $http.post('user.php',
                 {function: 'logout', 'userid': globals.userid})
                 .success(function (data) {
                     $cookieStore.remove(cookieName);
