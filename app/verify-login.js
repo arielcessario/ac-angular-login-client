@@ -97,6 +97,7 @@
     function AcAngularLoginClientService($http, $cookieStore, $window, $location) {
         //Variables
         var service = {};
+        var url = currentScriptPath.replace('.js', '.php');
 
         //Function declarations
         service.checkLogged = checkLogged;
@@ -145,7 +146,7 @@
                 //$window.location.href=destinationWebsite + 'clear';
             }
 
-            return $http.post('user.php',
+            return $http.post(url,
                 {function: 'checkLastLogin', 'userid': userid, 'token': token})
                 .success(function (data) {
 
@@ -188,7 +189,7 @@
         function logout() {
             var globals = $cookieStore.get(cookieName);
 
-            return $http.post('user.php',
+            return $http.post(url,
                 {function: 'logout', 'userid': globals.userid})
                 .success(function (data) {
                     $cookieStore.remove(cookieName);
