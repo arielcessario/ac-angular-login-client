@@ -25,9 +25,9 @@
     ;
 
 
-    AcAngularLoginClient.$inject = ['$routeParams', '$window', '$cookieStore', 'VerifyService', '$rootScope'];
+    AcAngularLoginClient.$inject = ['$routeParams', '$window', '$cookieStore', 'acAngularLoginClientService', '$rootScope'];
 
-    function AcAngularLoginClient($routeParams, $window, $cookieStore, VerifyService, $rootScope) {
+    function AcAngularLoginClient($routeParams, $window, $cookieStore, acAngularLoginClientService, $rootScope) {
         return {
             restrict: 'E',
             scope: {
@@ -53,6 +53,7 @@
                 //
                 //}
 
+                //console.log('entr');
                 //console.log($routeParams.auth);
                 //console.log($routeParams.id);
                 if ($routeParams !== undefined) {
@@ -60,22 +61,22 @@
                     if ($routeParams.id == -1) {
 
                         //console.log('entra');
-                        VerifyService.checkCookie();
+                        acAngularLoginClientService.checkCookie();
                     } else {
 
-                        VerifyService.checkLastLogin($routeParams.id, $routeParams.auth, function (data) {
+                        acAngularLoginClientService.checkLastLogin($routeParams.id, $routeParams.auth, function (data) {
 
                         });
                     }
                 } else {
 
-                    VerifyService.checkCookie();
+                    acAngularLoginClientService.checkCookie();
                     //$window.location.href=destinationWebsite;
                 }
                 //$location.url('#/view1');
 
                 $rootScope.$on('$routeChangeStart', function (event, next, current) {
-                    VerifyService.checkCookie();
+                    acAngularLoginClientService.checkCookie();
                 });
 
             },
@@ -100,9 +101,10 @@
 
         function checkCookie() {
 
+            //console.log(!$location.path().match(/verify-login/g));
 
             if (!$location.path().match(/verify-login/g)) {
-                console.log('servicio');
+                //console.log('servicio');
                 var globals = $cookieStore.get(cookieName);
                 //console.log(globals);
                 if (globals !== undefined &&
@@ -112,7 +114,7 @@
                     globals.rol !== undefined &&
                     globals.rol !== '') {
                     checkLastLogin(globals.userid, globals.verification, function (data) {
-                        //console.log(data);
+                        console.log(data);
                         if (!data) {
                             // Redirecciona a la aplicación verdadera
                             //console.log('true');
@@ -135,7 +137,7 @@
                 //$window.location.href=destinationWebsite + 'clear';
             }
 
-            return $http.post('./login-api/user.php',
+            return $http.post('user.php',
                 {function: 'checkLastLogin', 'userid': userid, 'token': token})
                 .success(function (data) {
 
@@ -143,7 +145,7 @@
                     if (data == 'false' || data.rol_id == 0 || data.rol_id == '' || data.rol_id == null) {
                         $cookieStore.remove(cookieName);
 
-                        $window.location.href = destinationWebsite + 'clear';
+                        //$window.location.href = destinationWebsite + 'clear';
                     } else {
                         setLogged(data.user_name, userid, data.rol_id, token);
 
