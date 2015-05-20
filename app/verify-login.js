@@ -78,6 +78,7 @@
 
                         acAngularLoginClientService.checkLastLogin($routeParams.id, $routeParams.auth, function (data) {
 
+
                         });
                     }
                 } else {
