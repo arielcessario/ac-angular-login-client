@@ -5,13 +5,14 @@
     var currentScriptPath = scripts[scripts.length-1].src;
     //console.log(currentScriptPath);
 
-    var destinationWebsite = "http://localhost/Login/app/#/login/";
+    var destinationWebsite = "http://localhost/test-login/app/#/";
+    var loginWebsite = "http://localhost/ac-angular-login/app/#/login/";
+    //var destinationWebsite = "http://localhost/Login/app/#/login/";
     var cookieName = 'appname.client.userLogged';
 
     angular.module('acAngularLoginClient', ['ngRoute'])
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider.when('/verify-login/:auth/:id', {
-                templateUrl: 'verify-login.html',
                 controllerAs: 'acAngularLoginClientCtrl'
             });
 
@@ -34,6 +35,9 @@
                 parametro: '='
             },
             templateUrl: currentScriptPath.replace('.js', '.html'),
+            link: function(scope, element, attrs) {
+                    //console.log($routeParams.auth);
+            },
             controller: function ($scope, $compile, $http) {
 
                 var vm = this;
@@ -59,14 +63,12 @@
                 //}
 
                 //console.log('entr');
-                //console.log($routeParams.auth);
-                //console.log($routeParams.id);
 
 
 
                 if ($routeParams !== undefined) {
                     //console.log($routeParams);
-                    if ($routeParams.id == -1) {
+                    if ($routeParams.id == -1 || $routeParams.id === undefined) {
 
                         //console.log('entra');
                         acAngularLoginClientService.checkCookie();
@@ -127,13 +129,13 @@
                         if (!data) {
                             // Redirecciona a la aplicación verdadera
                             //console.log('true');
-                            $window.location.href = destinationWebsite + 'clear';
+                            $window.location.href = destinationWebsite;
                         }
                     });
 
 
                 } else {
-                    $window.location.href = destinationWebsite + 'clear';
+                    $window.location.href = loginWebsite + 'clear';
                 }
             }
 
@@ -154,13 +156,13 @@
                     if (data == 'false' || data.rol_id == 0 || data.rol_id == '' || data.rol_id == null) {
                         $cookieStore.remove(cookieName);
 
-                        $window.location.href = destinationWebsite + 'clear';
+                        $window.location.href = loginWebsite + 'clear';
                     } else {
                         setLogged(data.user_name, userid, data.rol_id, token);
 
                     }
                     //var user = JSON.parse(data.user);
-                    //callback(data);
+                    callback(data);
                 })
                 .error()
 
@@ -179,7 +181,7 @@
 
 
             //console.log($cookieStore.get(cookieName));
-            $window.location.href=destinationWebsite;
+            //$window.location.href=destinationWebsite;
         }
 
         function checkLogged() {
@@ -193,7 +195,7 @@
                 {function: 'logout', 'userid': globals.userid})
                 .success(function (data) {
                     $cookieStore.remove(cookieName);
-                    $window.location.href = destinationWebsite + 'clear';
+                    $window.location.href = loginWebsite + 'clear';
 
                 })
                 .error()
