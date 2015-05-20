@@ -10,6 +10,8 @@
     //var destinationWebsite = "http://localhost/Login/app/#/login/";
     var cookieName = 'appname.client.userLogged';
 
+    var isDeployed = false;
+
     angular.module('acAngularLoginClient', ['ngRoute'])
         .config(['$routeProvider', function ($routeProvider) {
             $routeProvider.when('/verify-login/:auth/:id', {
@@ -114,28 +116,30 @@
 
             //console.log(!$location.path().match(/verify-login/g));
 
-            if (!$location.path().match(/verify-login/g)) {
-                //console.log('servicio');
-                var globals = $cookieStore.get(cookieName);
-                //console.log(globals);
-                if (globals !== undefined &&
-                    globals.userid !== undefined &&
-                    globals.userid !== '' &&
-                    globals.verification !== '' &&
-                    globals.rol !== undefined &&
-                    globals.rol !== '') {
-                    checkLastLogin(globals.userid, globals.verification, function (data) {
-                        //console.log(data);
-                        if (!data) {
-                            // Redirecciona a la aplicación verdadera
-                            //console.log('true');
-                            $window.location.href = destinationWebsite;
-                        }
-                    });
+            if (isDeployed) {
+                if (!$location.path().match(/verify-login/g)) {
+                    //console.log('servicio');
+                    var globals = $cookieStore.get(cookieName);
+                    //console.log(globals);
+                    if (globals !== undefined &&
+                        globals.userid !== undefined &&
+                        globals.userid !== '' &&
+                        globals.verification !== '' &&
+                        globals.rol !== undefined &&
+                        globals.rol !== '') {
+                        checkLastLogin(globals.userid, globals.verification, function (data) {
+                            //console.log(data);
+                            if (!data) {
+                                // Redirecciona a la aplicación verdadera
+                                //console.log('true');
+                                $window.location.href = destinationWebsite;
+                            }
+                        });
 
 
-                } else {
-                    $window.location.href = loginWebsite + 'clear';
+                    } else {
+                        $window.location.href = loginWebsite + 'clear';
+                    }
                 }
             }
 
@@ -148,23 +152,25 @@
                 //$window.location.href=destinationWebsite + 'clear';
             }
 
-            return $http.post(url,
-                {function: 'checkLastLogin', 'userid': userid, 'token': token})
-                .success(function (data) {
+            if (isDeployed) {
+                return $http.post(url,
+                    {function: 'checkLastLogin', 'userid': userid, 'token': token})
+                    .success(function (data) {
 
 
-                    if (data == 'false' || data.rol_id == 0 || data.rol_id == '' || data.rol_id == null) {
-                        $cookieStore.remove(cookieName);
+                        if (data == 'false' || data.rol_id == 0 || data.rol_id == '' || data.rol_id == null) {
+                            $cookieStore.remove(cookieName);
 
-                        $window.location.href = loginWebsite + 'clear';
-                    } else {
-                        setLogged(data.user_name, userid, data.rol_id, token);
+                            $window.location.href = loginWebsite + 'clear';
+                        } else {
+                            setLogged(data.user_name, userid, data.rol_id, token);
 
-                    }
-                    //var user = JSON.parse(data.user);
-                    callback(data);
-                })
-                .error()
+                        }
+                        //var user = JSON.parse(data.user);
+                        callback(data);
+                    })
+                    .error()
+            }
 
 
         }
